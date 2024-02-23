@@ -1,0 +1,427 @@
+version: '3'
+
+networks:
+  omind-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.25.0.0/24"
+          gateway: 172.25.0.1
+
+# 网络规划
+# nginx     172.25.0.3
+# mysql     172.25.0.5
+# redis     172.25.0.7
+# xxl-job   172.25.0.9
+# rabbitmq  172.25.0.11
+# minio     172.25.0.15
+# nacos     172.25.0.18
+
+# gateway   172.25.0.31
+# auth      172.25.0.36
+# system    172.25.0.41
+# resource  172.25.0.46
+
+# omind-baseplat 172.25.0.101
+# omind-userplat 172.25.0.111
+# omind-simplat   172.25.122
+# omind-mp       172.25.0.131
+
+
+services:
+  nginx:
+    image: nginx:1.22.1
+    container_name: nginx
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    ports:
+      - "80:80"
+      - "443:443"
+      - "9848:9848"
+      - "9849:9849"
+      - "9100:9100"
+      - "7180:7180"
+    volumes:
+      # 证书映射
+      - /usr/local/omind/docker/nginx/cert:/etc/nginx/cert
+      # 配置文件映射
+      - /usr/local/omind/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      # 页面目录
+      - /usr/local/omind/docker/nginx/html:/usr/share/nginx/html
+      # 日志目录
+      - /usr/local/omind/docker/nginx/log:/var/log/nginx
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.3
+
+  mysql:
+    image: mysql:8.0.31
+    container_name: mysql
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+      # root 密码
+      MYSQL_ROOT_PASSWORD: omind2023
+      # 初始化数据库
+      MYSQL_DATABASE: ruoyi-cloud
+    ports:
+      - "3306:3306"
+    volumes:
+      # 数据挂载
+      - /usr/local/omind/docker/mysql/data/:/var/lib/mysql/
+      # 配置挂载
+      - /usr/local/omind/docker/mysql/conf/:/etc/mysql/conf.d/
+      # 初始化SQL
+      - /usr/local/omind/docker/mysql/init/:/docker-entrypoint-initdb.d/
+    command:
+      # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.5
+
+  redis:
+    image: redis:6.2.7
+    container_name: redis
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    ports:
+      - "6379:6379"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    volumes:
+      # 配置文件
+      - /usr/local/omind/docker/redis/conf/:/redis/config/
+      # 数据文件
+      - /usr/local/omind/docker/redis/data/:/redis/data/
+    # command: "redis-server /redis/config/redis.conf"
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.7
+
+  xxl-job:
+    restart: always
+    image: xuxueli/xxl-job-admin:2.3.1
+    container_name: xxl-job
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    ports:
+      - "18081:8080"
+    environment:
+      # 时区上海
+      PARAMS: "--spring.datasource.url=jdbc:mysql://172.25.0.5:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai  --spring.datasource.username=omind  --spring.datasource.password=omind2023"
+    volumes:
+      - /usr/local/omind/docker/xxl-job/logs/:/data/applogs/xxl-job/
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.9
+
+  rabbitmq:
+    restart: always
+    image: rabbitmq:3.10.6
+    container_name: rabbitmq
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      RABBITMQ_DEFAULT_USER: omind
+      RABBITMQ_DEFAULT_PASS: omind2023
+    ports:
+      - "15672:15672" # 管理界面端口
+      - "5672:5672"   # api 端口
+    volumes:
+      - /usr/local/omind/docker/rabbitmq/log:/var/log/rabbitmq
+      - /usr/local/omind/docker/rabbitmq/data:/var/lib/rabbitmq
+    # command: /bin/bash -c "rabbitmq-plugins enable rabbitmq_management"
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.11
+
+  minio:
+    restart: always
+    image: minio/minio:RELEASE.2023-03-24T21-41-23Z
+    container_name: minio
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    ports:
+      # api 端口
+      - "9000:9000"
+      # 控制台端口
+      - "9001:9001"
+      # 浏览端口
+      - "9090:9090"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+      # 管理后台用户名
+      MINIO_ROOT_USER: omind
+      # 管理后台密码，最小8个字符
+      MINIO_ROOT_PASSWORD: omind2023
+      # https需要指定域名
+      #MINIO_SERVER_URL: "https://xxx.com:9000"
+      #MINIO_BROWSER_REDIRECT_URL: "https://xxx.com:9001"
+      # 开启压缩 on 开启 off 关闭
+      MINIO_COMPRESS: "off"
+      # 扩展名 .pdf,.doc 为空 所有类型均压缩
+      MINIO_COMPRESS_EXTENSIONS: ""
+      # mime 类型 application/pdf 为空 所有类型均压缩
+      MINIO_COMPRESS_MIME_TYPES: ""
+    volumes:
+      # 映射当前目录下的data目录至容器内/data目录
+      - /usr/local/omind/docker/minio/data:/data
+      # 映射配置目录
+      - /usr/local/omind/docker/minio/config:/root/.minio/
+    command: server --address ':9000' --console-address ':9001' /data  # 指定容器中的目录 /data
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.15
+
+  nacos:
+    restart: always
+    image: nacos/nacos-server:v2.1.1
+    #    image: nacos/nacos-server:v2.1.2-slim
+    container_name: nacos
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    ports:
+      - "8848:8848"
+    #   - "9848:9848"
+    #   - "9849:9849"
+    environment:
+      TZ: Asia/Shanghai
+      MODE: standalone
+      NACOS_REPLICAS: 1
+      PREFER_HOST_MODE: hostname
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: 172.25.0.5
+      MYSQL_SERVICE_DB_NAME: nacos
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_USER: omind
+      MYSQL_SERVICE_PASSWORD: omind2023
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+    volumes:
+      # 日志目录 注意集群模式下 日志目录不能一致 需要区分例如 nacos1 nacos2
+      - /usr/local/omind/docker/nacos/logs:/root/nacos/logs
+      # 集群配置文件 集群所有nacos都必须使用此文件
+    #      - /usr/local/omind/docker/nacos/conf/cluster.conf:/root/nacos/conf/cluster.conf
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.18
+
+  ruoyi-gateway:
+    image: ruoyi/ruoyi-gateway:2.1.2
+    container_name: ruoyi-gateway
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    ports:
+      - "8080:8080"
+    volumes:
+      # 配置文件
+      - /usr/local/omind/docker/ruoyi-gateway/logs/:/ruoyi/gateway/logs
+      # skywalking 探针
+    #      - /usr/local/omind/docker/skywalking/agent/:/ruoyi/skywalking/agent
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.31
+
+  ruoyi-auth:
+    image: ruoyi/ruoyi-auth:2.1.2
+    container_name: ruoyi-auth
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    ports:
+      - "9210:9210"
+    volumes:
+      # 配置文件
+      - /usr/local/omind/docker/ruoyi-auth/logs/:/ruoyi/auth/logs
+      # skywalking 探针
+    #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.36
+
+  ruoyi-system:
+    image: ruoyi/ruoyi-system:2.1.2
+    container_name: ruoyi-system
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    ports:
+      - "9201:9201"
+    volumes:
+      # 配置文件
+      - /usr/local/omind/docker/ruoyi-system/logs/:/ruoyi/system/logs
+      # skywalking 探针
+    #      - /Users/omind/Desktop/skywalking/agent/:/ruoyi/skywalking/agent
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.41
+
+  ruoyi-resource:
+    image: ruoyi/ruoyi-resource:2.1.2
+    container_name: ruoyi-resource
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    ports:
+      - "9204:9204"
+    volumes:
+      # 配置文件
+      - /usr/local/omind/docker/ruoyi-resource/logs/:/ruoyi/resource/logs
+      # skywalking 探针
+    #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.46
+
+  omind-baseplat:
+    image: omind/omind-baseplat:1.0.0
+    container_name: omind-baseplat
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    ports:
+      - "9801:9801"
+    volumes:
+      # 配置文件
+      - /usr/local/omind/docker/omind-baseplat/logs/:/omind/baseplat/logs
+      # skywalking 探针
+    #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.101
+
+  omind-userplat:
+    image: omind/omind-userplat:1.0.0
+    container_name: omind-userplat
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    ports:
+      - "9805:9805"
+    volumes:
+      # 配置文件
+      - /usr/local/omind/docker/omind-userplat/logs/:/omind/userplat/logs
+      # skywalking 探针
+    #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.111
+
+  omind-simplat:
+    image: omind/omind-simplat:1.0.0
+    container_name: omind-simplat
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    ports:
+      - "9804:9804"
+    volumes:
+      # 配置文件
+      - /usr/local/omind/docker/omind-simplat/logs/:/omind/simplat/logs
+      # skywalking 探针
+    #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.122
+
+  omind-mp:
+    image: omind/omind-mp:1.0.0
+    container_name: omind-mp
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+    ports:
+      - "9807:9807"
+    volumes:
+      # 配置文件
+      - /usr/local/omind/docker/omind-mp/logs/:/omind/mp/logs
+      # skywalking 探针
+    #      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
+    privileged: true
+    networks:
+      omind-net:
+        ipv4_address: 172.25.0.131

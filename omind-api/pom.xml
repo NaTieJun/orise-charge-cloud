@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.dromara</groupId>
+        <artifactId>ruoyi-cloud-plus</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>omind-api-bom</module>
+        <module>omind-api-common</module>
+        <module>omind-api-mq</module>
+        <module>omind-api-user-mq</module>
+        <module>omind-api-baseplat</module>
+        <module>omind-api-userplat</module>
+    </modules>
+
+    <artifactId>omind-api</artifactId>
+    <packaging>pom</packaging>
+    <description>
+        omind-api 系统接口
+    </description>
+
+    <dependencies>
+    </dependencies>
+
+</project>

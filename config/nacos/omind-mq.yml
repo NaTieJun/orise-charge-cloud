@@ -1,0 +1,105 @@
+--- # rabbitmq 配置
+spring:
+  rabbitmq:
+    host: 172.25.0.11
+    port: 5672
+    username: omind
+    password: omind2023
+  cloud:
+    # https://docs.spring.io/spring-cloud-stream/reference/rabbit/rabbit_overview/receiving-batch.html
+    function:
+      # 重点配置 与 binding 名与消费者对应
+      definition: stationPriceSender;priceSender;realtimeData;chargeOrderData;heartBeat
+    stream:
+      function:
+        bindings:
+          realtimeData-in-0: realtimeData-in
+          realtimeData-out-0: realtimeData-out
+          chargeOrderData-in-0: chargeOrderData-in
+          chargeOrderData-out-0: chargeOrderData-out
+          priceSender-in-0: priceSender-in
+          priceSender-out-0: priceSender-out
+          stationPriceSender-in-0: stationPriceSender-in
+          stationPriceSender-out-0: stationPriceSender-out
+          heartBeat-in-0: heartBeat-in
+          heartBeat-out-0: heartBeat-out
+      default-binder: rabbit
+      bindings:
+        realtimeData-in:
+          binder: rabbit
+          destination: realtimeData-topic
+          content-type: application/json
+          group: device-group
+          consumer:
+            batch-mode: true
+            concurrency: 1 # 初始/最少/空闲时 消费者数量。默认1
+        realtimeData-out:
+          binder: rabbit
+          destination: realtimeData-topic
+          content-type: application/json
+          group: device-group
+        chargeOrderData-in:
+          binder: rabbit
+          destination: chargeOrderData-topic
+          content-type: application/json
+          group: device-group
+        chargeOrderData-out:
+          binder: rabbit
+          destination: chargeOrderData-topic
+          content-type: application/json
+          group: device-group
+        priceSender-in:
+          binder: rabbit
+          destination: priceSender-topic
+          content-type: application/json
+          group: device-group
+        priceSender-out:
+          binder: rabbit
+          destination: priceSender-topic
+          content-type: application/json
+          group: device-group
+        stationPriceSender-in:
+          binder: rabbit
+          destination: stationPriceSender-topic
+          content-type: application/json
+          group: device-group
+        stationPriceSender-out:
+          binder: rabbit
+          destination: stationPriceSender-topic
+          content-type: application/json
+          group: device-group
+        heartBeat-in:
+          binder: rabbit
+          destination: heartBeat-topic
+          content-type: application/json
+          group: device-group
+          consumer:
+            batch-mode: true
+            concurrency: 1 # 初始/最少/空闲时 消费者数量。默认1
+        heartBeat-out:
+          binder: rabbit
+          destination: heartBeat-topic
+          content-type: application/json
+          group: device-group
+      rabbit:
+        bindings:
+          realtimeData-in:
+            consumer:
+              enable-batching: true
+              batch-size: 50
+              receive-timeout: 2000
+            producer:
+              batching-enabled: true
+              batch-size: 50
+              batch-buffer-limit: 2000
+              batch-timeout: 5000
+          heartBeat-in:
+            consumer:
+              enable-batching: true
+              batch-size: 50
+              receive-timeout: 2000
+            producer:
+              batching-enabled: true
+              batch-size: 50
+              batch-buffer-limit: 2000
+              batch-timeout: 5000

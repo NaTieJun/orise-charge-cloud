@@ -1,0 +1,58 @@
+spring:
+  datasource:
+    dynamic:
+      # 设置默认的数据源或者数据源组,默认值即为 master
+      primary: master
+      seata: false
+      datasource:
+        # 主库数据源
+        master:
+          type: ${spring.datasource.type}
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: ${datasource.omind-user-plat.url}
+          username: ${datasource.omind-user-plat.username}
+          password: ${datasource.omind-user-plat.password}
+
+forest:
+  backend: okhttp3
+  max-retry-count: 3 #请求失败后重试次数，默认为0次不重试
+  max-retry-interval: 1000 #重试间隔时间
+  connect-timeout: 3000 #链接超时时间
+  timeout: 3000  # 请求超时时间
+  ## 日志总开关，打开/关闭Forest请求/响应日志（默认为 true）
+  log-enabled: true
+  ## 打开/关闭Forest请求日志（默认为 true）
+  log-request: true
+  ## 打开/关闭Forest响应状态日志（默认为 true）
+  log-response-status: true
+  ## 打开/关闭Forest响应内容日志（默认为 false）
+  log-response-content: true
+  variables:
+    uplatAuthUrl: http://test
+
+wx:
+  miniapp:
+    appid: wx66a19ee384891552
+    secret: ba978615ad3666101a14e2ec6514b764
+    token: omind2023
+    aesKey: rA5bUXwCPrSnicABarl6rLGm9BWGBnvkIG9TPzjt2ae
+    msgDataFormat: JSON
+  pay:
+    mchId: 1638720029
+    mchKey: 0lKdF0C3kfxeweg2ySf61e67b0ml3Wik
+    keyPath: classpath:/resources/omind_apiclient_cert.p12
+    isSandbox: true
+    payCallback: https://127.0.0.1:8080/mp/v1/pay/wx
+
+xxl:
+  job:
+    admin:
+      addresses: http://172.25.0.9:8080/xxl-job-admin
+    accessToken: default_token
+    executor:
+      appname: omind-scheduler-userplat
+      address:
+      ip:
+      port: 18085
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: 30

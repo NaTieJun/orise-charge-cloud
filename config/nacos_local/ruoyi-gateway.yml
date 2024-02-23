@@ -1,0 +1,113 @@
+# 安全配置
+security:
+  # 防止XSS攻击
+  xss:
+    enabled: true
+    excludeUrls:
+      - /system/notice
+  # 不校验白名单
+  ignore:
+    whites:
+      - /auth/code
+      - /auth/logout
+      - /auth/login
+      - /auth/binding/*
+      - /auth/social/callback
+      - /auth/register
+      - /auth/tenant/list
+      - /resource/sms/code
+      - /*/v3/api-docs
+      - /*/error
+      - /csrf
+      - /baseplat/evcs/**
+      - /userplat/evcs/**
+
+spring:
+  cloud:
+    # 网关配置
+    gateway:
+      # 打印请求日志(自定义)
+      requestLog: true
+      discovery:
+        locator:
+          lowerCaseServiceId: true
+          enabled: true
+      routes:
+        # 认证中心
+        - id: ruoyi-auth
+          uri: lb://ruoyi-auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
+        # 代码生成
+        - id: ruoyi-gen
+          uri: lb://ruoyi-gen
+          predicates:
+            - Path=/tool/**
+          filters:
+            - StripPrefix=1
+        # 系统模块
+        - id: ruoyi-system
+          uri: lb://ruoyi-system
+          predicates:
+            - Path=/system/**,/monitor/**
+          filters:
+            - StripPrefix=1
+        # 资源服务
+        - id: ruoyi-resource
+          uri: lb://ruoyi-resource
+          predicates:
+            - Path=/resource/**
+          filters:
+            - StripPrefix=1
+        # 演示服务
+        - id: ruoyi-demo
+          uri: lb://ruoyi-demo
+          predicates:
+            - Path=/demo/**
+          filters:
+            - StripPrefix=1
+        # MQ演示服务
+        - id: ruoyi-stream-mq
+          uri: lb://ruoyi-stream-mq
+          predicates:
+            - Path=/stream-mq/**
+          filters:
+            - StripPrefix=1
+        # 充电-基础平台
+        - id: omind-baseplat
+          uri: lb://omind-baseplat
+          predicates:
+            - Path=/baseplat/**
+          filters:
+            - StripPrefix=1
+        # 充电-用户平台
+        - id: omind-userplat
+          uri: lb://omind-userplat
+          predicates:
+            - Path=/userplat/**
+          filters:
+            - StripPrefix=1
+        # 充电-客户端
+        - id: omind-mp
+          uri: lb://omind-mp
+          predicates:
+            - Path=/mp/**
+          filters:
+            - StripPrefix=1
+
+    # sentinel 配置
+    sentinel:
+      filter:
+        enabled: false
+      # nacos配置持久化
+      datasource:
+        ds1:
+          nacos:
+            server-addr: ${spring.cloud.nacos.server-addr}
+            dataId: sentinel-${spring.application.name}.json
+            groupId: ${spring.cloud.nacos.config.group}
+            namespace: ${spring.profiles.active}
+            data-type: json
+            rule-type: gw-flow

@@ -1,0 +1,53 @@
+--- # rabbitmq 配置
+spring:
+  rabbitmq:
+    host: 172.25.0.11
+    port: 5672
+    username: omind
+    password: omind2023
+  cloud:
+    # https://docs.spring.io/spring-cloud-stream/reference/rabbit/rabbit_overview/receiving-batch.html
+    function:
+      # 重点配置 与 binding 名与消费者对应
+      definition: upStationStatus;upEquipChargeStatus;upChargeOrderInfo
+    stream:
+      function:
+        bindings:
+          upStationStatus-in-0: upStationStatus-in
+          upStationStatus-out-0: upStationStatus-out
+          upEquipChargeStatus-in-0: upEquipChargeStatus-in
+          upEquipChargeStatus-out-0: upEquipChargeStatus-out
+          upChargeOrderInfo-in-0: upChargeOrderInfo-in
+          upChargeOrderInfo-out-0: upChargeOrderInfo-out
+      default-binder: rabbit
+      bindings:
+        upStationStatus-in:
+          binder: rabbit
+          destination: upStationStatus-topic
+          content-type: application/json
+          group: userplat-group
+        upStationStatus-out:
+          binder: rabbit
+          destination: upStationStatus-topic
+          content-type: application/json
+          group: userplat-group
+        upEquipChargeStatus-in:
+          binder: rabbit
+          destination: upEquipChargeStatus-topic
+          content-type: application/json
+          group: userplat-group
+        upEquipChargeStatus-out:
+          binder: rabbit
+          destination: upEquipChargeStatus-topic
+          content-type: application/json
+          group: userplat-group
+        upChargeOrderInfo-in:
+          binder: rabbit
+          destination: upChargeOrderInfo-topic
+          content-type: application/json
+          group: userplat-group
+        upChargeOrderInfo-out:
+          binder: rabbit
+          destination: upChargeOrderInfo-topic
+          content-type: application/json
+          group: userplat-group
