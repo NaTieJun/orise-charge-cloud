@@ -124,3 +124,9 @@ omind-simplat：模拟充电桩模块
 
 - smart-socket 项目 [传送门 https://gitee.com/smartboot/smart-socket](https://gitee.com/smartboot/smart-socket)
 - ruoyi-cloud-plus 项目 [传送门 https://gitee.com/dromara/RuoYi-Cloud-Plus](https://gitee.com/dromara/RuoYi-Cloud-Plus)
+
+
+### 🐶 商务咨询
+
+请加微信
+<img src="/images/cloud/natiejun.png" alt="商务二维码" height="300">
