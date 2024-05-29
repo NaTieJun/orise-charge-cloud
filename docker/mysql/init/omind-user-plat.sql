@@ -23,7 +23,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `omind_app`;
 CREATE TABLE `omind_app` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `app_type` int unsigned NOT NULL DEFAULT '0' COMMENT '0 openAPI 1 莱电小程序',
+  `app_type` int unsigned NOT NULL DEFAULT '0' COMMENT '0 openAPI 1 奥升小程序',
   `app_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '应用名',
   `app_key` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '应用key',
   `secret` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '应用密钥',
