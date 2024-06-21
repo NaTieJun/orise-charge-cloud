@@ -134,4 +134,5 @@ omind-simplat：模拟充电桩模块
 请加微信并提供以下信息   
 - 待合作公司或组织机构名称
 - 合作需求概要
+- 欢迎咨询其他商业合作模式
 <img src="/images/natiejun.png" alt="商务二维码" height="300">
