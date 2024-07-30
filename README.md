@@ -2,11 +2,11 @@
    
 当前版本：V1.0.0
    
-[🔥 充电平台微服务源码](https://gitee.com/orise001/orise-charge-cloud)
+[🔥 充电平台微服务源码](https://github.com/NaTieJun/orise-charge-cloud)
    
-[🔥 充电管理后台源码](https://gitee.com/orise001/orise-admin)
+[🔥 充电管理后台源码](https://github.com/NaTieJun/orise-admin)
    
-[🔥 充电小程序源码](https://gitee.com/orise001/orise-mp)   
+[🔥 充电小程序源码](https://github.com/NaTieJun/orise-mp)   
    
 ### ⭐ 系统亮点
 
