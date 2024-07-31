@@ -130,3 +130,4 @@ omind-simplat：模拟充电桩模块
 ### 🐶 技术交流
 
 mail: 298542443@qq.com
+wechat: flainsky
