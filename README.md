@@ -79,7 +79,7 @@ omind-simplat：模拟充电桩模块
 演示系统基于阿里云抢占式服务器快速构建，每12小时会检测并自动部署系统环境  
 [👉 基于开源项目，快速构建最省钱的抢占式服务器](https://github.com/flainsky/alibaba-cloud-spot-server-easy-start)  
   
-奥升充电｜超低运维成本，构建自有高性能商业充电桩运营平台
+奥升充电｜超低运维成本，构建自有高性能商业充电桩运营平台  
 [万桩测试，2核4G设备服务器](https://zhuanlan.zhihu.com/p/712346628)  
 
 ### ⚙️ 快速开始
