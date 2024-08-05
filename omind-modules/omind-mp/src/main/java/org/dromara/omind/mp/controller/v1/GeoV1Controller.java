@@ -11,6 +11,7 @@ import org.dromara.common.core.exception.base.BaseException;
 import org.dromara.omind.mp.domain.request.GeoStationListRequest;
 import org.dromara.omind.mp.domain.request.SignRequest;
 import org.dromara.omind.mp.service.GeoService;
+import org.dromara.omind.mp.token.annotation.TokenCheck;
 import org.dromara.omind.mp.utils.SignUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ public class GeoV1Controller {
     @Autowired
     HttpServletRequest request;
 
+    @TokenCheck
     @Operation(summary = "根据地图坐标，查询充电站列表")
     @GetMapping("geoStationList")
     public R geoStationList(GeoStationListRequest geoStationListRequest, SignRequest signRequest) {
@@ -44,12 +46,6 @@ public class GeoV1Controller {
                 geoStationListRequest.setUserLat(geoStationListRequest.getLat());
                 geoStationListRequest.setUserLon(geoStationListRequest.getLon());
             }
-
-            String token = request.getHeader("token");
-            if (!TextUtils.isBlank(token)) {
-                signUtil.checkTokenAndSign(token, signRequest);
-            }
-
             return R.ok(geoService.geoList(geoStationListRequest, signRequest));
         } catch (BaseException ex) {
             log.error(ex.toString());

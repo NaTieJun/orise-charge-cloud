@@ -12,6 +12,7 @@ import org.dromara.common.core.exception.base.BaseException;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.omind.mp.domain.request.SignRequest;
+import org.dromara.omind.mp.token.annotation.TokenCheck;
 import org.dromara.omind.mp.utils.SignUtil;
 import org.dromara.omind.userplat.api.domain.entity.OmindFeedbackEntity;
 import org.dromara.omind.userplat.api.domain.request.FeedbackRequest;
@@ -34,17 +35,11 @@ public class FeedbackV1Controller {
     @DubboReference
     RemoteOmindFeedbackService feedbackService;
 
+    @TokenCheck
     @Operation(summary = "意见反馈")
     @PostMapping("feedback")
     public R feedback(@RequestBody FeedbackRequest feedbackRequest, SignRequest signRequest){
         try{
-            String token = request.getHeader("token");
-            if(TextUtils.isBlank(token)){
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-
-            Long uid = signUtil.checkTokenAndSign(token, signRequest);
-
             feedbackService.feedback(feedbackRequest, signRequest.getOpUid());
             return R.ok("ok");
         }
@@ -58,22 +53,13 @@ public class FeedbackV1Controller {
         }
     }
 
+    @TokenCheck
     @Operation(summary = "意见反馈列表")
     @GetMapping("feedbackList")
     public TableDataInfo feedbackList(SignRequest signRequest, PageQuery pageQuery){
         try{
-            String token = request.getHeader("token");
-            if(TextUtils.isBlank(token)){
-                TableDataInfo rspData = new TableDataInfo();
-                rspData.setCode(HttpStatus.UNAUTHORIZED);
-                rspData.setMsg("未登录");
-                return rspData;
-            }
 
-            Long uid = signUtil.checkTokenAndSign(token, signRequest);
-            log.info("feedback--uid=" + uid + "|signRequest=" + signRequest);
-
-            TableDataInfo tableDataInfo = feedbackService.page(uid, pageQuery);
+            TableDataInfo tableDataInfo = feedbackService.page(signRequest.getOpUid(), pageQuery);
             return tableDataInfo;
         }
         catch (BaseException ex){
@@ -92,17 +78,11 @@ public class FeedbackV1Controller {
         }
     }
 
+    @TokenCheck
     @Operation(summary = "意见反馈详情")
     @GetMapping("info/{id}")
     public R info(@PathVariable Long id, SignRequest signRequest){
         try{
-            String token = request.getHeader("token");
-            if(TextUtils.isBlank(token)){
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-
-            signUtil.checkTokenAndSign(token, signRequest);
-
             OmindFeedbackEntity feedbackEntity = feedbackService.info(id);
             return R.ok(feedbackEntity);
         }

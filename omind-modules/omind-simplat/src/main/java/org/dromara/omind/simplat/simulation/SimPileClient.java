@@ -424,7 +424,7 @@ public class SimPileClient implements SimPileIClient {
         }
         sysChargeOrder.setTotalMoney(sysChargeOrder.getTotalMoney().add(currentPrice.multiply(currentPower)));
         sysChargeOrder.setElecMoney(sysChargeOrder.getElecMoney().add(priceE.multiply(currentPower)).setScale(5,RoundingMode.UP));
-        sysChargeOrder.setServiceMoney(sysChargeOrder.getElecMoney().add(priceS.multiply(currentPower)).setScale(5,RoundingMode.UP));
+        sysChargeOrder.setServiceMoney(sysChargeOrder.getServiceMoney().add(priceS.multiply(currentPower)).setScale(5,RoundingMode.UP));
         sysChargeOrder.setSumPeriod((short)chargeOrderItemMap.size());
 
         log.info("[实时状态]->充电度数" + sysChargeOrder.getTotalPower());

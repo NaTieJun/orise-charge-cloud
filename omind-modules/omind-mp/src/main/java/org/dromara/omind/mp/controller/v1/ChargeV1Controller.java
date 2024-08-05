@@ -12,6 +12,7 @@ import org.dromara.common.core.exception.base.BaseException;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.omind.mp.domain.request.SignRequest;
+import org.dromara.omind.mp.token.annotation.TokenCheck;
 import org.dromara.omind.userplat.api.domain.request.ChargeOrderListRequest;
 import org.dromara.omind.mp.utils.SignUtil;
 import org.dromara.omind.userplat.api.domain.request.GetChargeOrderInfoRequest;
@@ -36,15 +37,11 @@ public class ChargeV1Controller {
     @DubboReference
     RemoteOmindChargeService chargeService;
 
+    @TokenCheck
     @Operation(summary = "启动充电")
     @PostMapping("startCharge")
     public R startCharge(@RequestBody StartChargeRequest startChargeRequest, SignRequest signRequest){
         try {
-            String token = request.getHeader("token");
-            if (TextUtils.isBlank(token)) {
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-            signUtil.checkTokenAndSign(token, signRequest);
             return R.ok(chargeService.startCharge(startChargeRequest, signRequest.getOpUid()));
         }
         catch (BaseException ex){
@@ -57,15 +54,11 @@ public class ChargeV1Controller {
         }
     }
 
+    @TokenCheck
     @Operation(summary = "手动结束充电")
     @PostMapping("stopCharge")
     public R stopCharge(@RequestBody StopChargeRequest stopChargeRequest, SignRequest signRequest){
         try {
-            String token = request.getHeader("token");
-            if (TextUtils.isBlank(token)) {
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-            signUtil.checkTokenAndSign(token, signRequest);
             chargeService.stopCharge(stopChargeRequest.getStartChargeSeq(), signRequest.getOpUid());
             return R.ok();
         }
@@ -79,20 +72,11 @@ public class ChargeV1Controller {
         }
     }
 
+    @TokenCheck
     @Operation(summary = "获取充电订单列表")
     @GetMapping("getChargeOrderList")
     public TableDataInfo getChargeOrderList(ChargeOrderListRequest chargeOrderListRequest, SignRequest signRequest, PageQuery pageQuery){
         try {
-            String token = request.getHeader("token");
-            if (TextUtils.isBlank(token)) {
-                TableDataInfo tableDataInfo = new TableDataInfo();
-                tableDataInfo.setCode(HttpStatus.UNAUTHORIZED);
-                tableDataInfo.setMsg("未登录");
-                return tableDataInfo;
-            }
-
-            signUtil.checkTokenAndSign(token, signRequest);
-
             TableDataInfo dataTable = chargeService.chargeOrderList(chargeOrderListRequest, signRequest.getOpUid(), pageQuery);
             return dataTable;
         }
@@ -112,16 +96,11 @@ public class ChargeV1Controller {
         }
     }
 
+    @TokenCheck
     @Operation(summary = "获取充电订单详情")
     @GetMapping("getChargeOrderInfo")
     public R getChargeOrderInfo(GetChargeOrderInfoRequest getChargeOrderInfoRequest, SignRequest signRequest){
         try {
-            String token = request.getHeader("token");
-            if (TextUtils.isBlank(token)) {
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-            signUtil.checkTokenAndSign(token, signRequest);
-
             return R.ok(chargeService.chargeOrderInfo(getChargeOrderInfoRequest.getStartChargeSeq()));
         }
         catch (BaseException ex){

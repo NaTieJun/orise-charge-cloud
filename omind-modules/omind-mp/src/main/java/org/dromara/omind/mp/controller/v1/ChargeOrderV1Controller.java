@@ -10,6 +10,7 @@ import org.dromara.common.core.domain.R;
 import org.dromara.common.core.exception.base.BaseException;
 import org.dromara.omind.mp.domain.request.SignRequest;
 import org.dromara.omind.mp.service.PrepareOrderService;
+import org.dromara.omind.mp.token.annotation.TokenCheck;
 import org.dromara.omind.mp.utils.SignUtil;
 import org.dromara.omind.userplat.api.domain.request.PrepareOrderInfoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,21 +34,16 @@ public class ChargeOrderV1Controller {
     @Autowired
     PrepareOrderService prepareOrderService;
 
+    @TokenCheck
     @Operation(summary = "获取充电下单前展示信息详情")
     @GetMapping("prepareOrderInfo")
     public R prepareOrderInfo(PrepareOrderInfoRequest prepareOrderInfoRequest, SignRequest signRequest){
 
         try {
-            String token = request.getHeader("token");
-            if (TextUtils.isBlank(token)) {
+            if (signRequest.getOpUid() == null || signRequest.getOpUid() <= 0) {
                 return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
             }
-
-            Long uid = signUtil.checkTokenAndSign(token, signRequest);
-            if (uid == null || uid <= 0) {
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-            return R.ok(prepareOrderService.prepareOrderInfo(uid, prepareOrderInfoRequest.getConnectorId(), prepareOrderInfoRequest.getHasPrice()));
+            return R.ok(prepareOrderService.prepareOrderInfo(signRequest.getOpUid(), prepareOrderInfoRequest.getConnectorId(), prepareOrderInfoRequest.getHasPrice()));
         }
         catch (BaseException ex){
             log.error(ex.toString());

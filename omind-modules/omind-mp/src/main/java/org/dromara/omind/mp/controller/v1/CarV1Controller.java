@@ -10,6 +10,7 @@ import org.dromara.common.core.constant.HttpStatus;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.exception.base.BaseException;
 import org.dromara.omind.mp.domain.request.SignRequest;
+import org.dromara.omind.mp.token.annotation.TokenCheck;
 import org.dromara.omind.mp.utils.SignUtil;
 import org.dromara.omind.userplat.api.domain.dto.OmindUserCarInsertDto;
 import org.dromara.omind.userplat.api.domain.dto.OmindUserCarUpdateDto;
@@ -32,16 +33,11 @@ public class CarV1Controller {
     @DubboReference
     RemoteOmindUserCarService userCarService;
 
+    @TokenCheck
     @Operation(summary = "[OK]获取用户车辆列表")
     @GetMapping("list")
     public R list(SignRequest signRequest){
         try {
-            String token = request.getHeader("token");
-            if (TextUtils.isBlank(token)) {
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-            signUtil.checkTokenAndSign(token, signRequest);
-
             return R.ok(userCarService.list(signRequest.getOpUid()));
         }
         catch (BaseException ex){
@@ -54,16 +50,11 @@ public class CarV1Controller {
         }
     }
 
+    @TokenCheck
     @Operation(summary = "[OK]车辆信息详情")
     @GetMapping("info/{id}")
     public R info(@PathVariable Long id, SignRequest signRequest){
         try {
-            String token = request.getHeader("token");
-            if (TextUtils.isBlank(token)) {
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-            signUtil.checkTokenAndSign(token, signRequest);
-
             return R.ok(userCarService.info(id));
         }
         catch (BaseException ex){
@@ -76,15 +67,11 @@ public class CarV1Controller {
         }
     }
 
+    @TokenCheck
     @Operation(summary = "[OK]添加用户车辆")
     @PostMapping("insert")
     public R insert(@RequestBody OmindUserCarInsertDto omindUserCarInsertDto, SignRequest signRequest){
         try {
-            String token = request.getHeader("token");
-            if (TextUtils.isBlank(token)) {
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-            signUtil.checkTokenAndSign(token, signRequest);
             omindUserCarInsertDto.setUserId(signRequest.getOpUid());
             userCarService.insert(omindUserCarInsertDto);
             return R.ok();
@@ -99,15 +86,11 @@ public class CarV1Controller {
         }
     }
 
+    @TokenCheck
     @Operation(summary = "[OK]修改用户车辆")
     @PostMapping("upcar")
     public R upcar(@RequestBody OmindUserCarUpdateDto omindUserCarUpdateDto, SignRequest signRequest){
         try {
-            String token = request.getHeader("token");
-            if (TextUtils.isBlank(token)) {
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-            signUtil.checkTokenAndSign(token, signRequest);
             omindUserCarUpdateDto.setUserId(signRequest.getOpUid());
             userCarService.upCar(omindUserCarUpdateDto);
             return R.ok();
@@ -122,15 +105,11 @@ public class CarV1Controller {
         }
     }
 
+    @TokenCheck
     @Operation(summary = "[OK]删除用户车辆")
     @PutMapping("del/{id}")
     public R del(@PathVariable Long id, SignRequest signRequest){
         try {
-            String token = request.getHeader("token");
-            if (TextUtils.isBlank(token)) {
-                return R.fail(HttpStatus.UNAUTHORIZED, "未登录");
-            }
-            signUtil.checkTokenAndSign(token, signRequest);
             userCarService.del(id);
             return R.ok();
         }
