@@ -13,8 +13,8 @@
 | 仓库  | 后端  |前端 | 小程序   |
 |--------------------|--------------------|--------------------|--------------------|
 | Github | [充电平台微服务源码](https://github.com/NaTieJun/orise-charge-cloud) | [充电管理后台源码](https://github.com/NaTieJun/orise-admin)  | [充电小程序源码](https://github.com/NaTieJun/orise-mp)  |
-| Gitee  | [充电平台微服务源码](https://gitee.com/orise001/orise-charge-cloud)<br>[充电平台微服务源码(备用)](https://gitee.com/orise001/orise-charge-cloud2)| [充电管理后台源码](https://gitee.com/orise001/orise-admin)  | [充电小程序源码](https://gitee.com/orise001/orise-mp)  |
 | GitCode  | [充电平台微服务源码](https://gitcode.com/orise/orise-charge-cloud) | [充电管理后台源码](https://gitcode.com/orise/orise-admin)  | [充电小程序源码](https://gitcode.com/orise/orise-mp/)  |
+| Gitee  | [充电平台微服务源码](https://gitee.com/orise001/orise-charge-cloud)<br>[充电平台微服务源码(备用)](https://gitee.com/orise001/orise-charge-cloud2)| [充电管理后台源码](https://gitee.com/orise001/orise-admin)  | [充电小程序源码](https://gitee.com/orise001/orise-mp)  |
 
 ### ⭐ 系统亮点
 
