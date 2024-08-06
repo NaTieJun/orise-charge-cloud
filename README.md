@@ -7,7 +7,15 @@
 [🔥 充电管理后台源码](https://github.com/NaTieJun/orise-admin)
    
 [🔥 充电小程序源码](https://github.com/NaTieJun/orise-mp)   
-   
+
+### 📋 项目源码
+-----------------------------------
+| 仓库  | 后端  |前端 | 数据大屏前端   |
+|--------------------|--------------------|--------------------|--------------------|
+| Github | [微服务](https://github.com/NaTieJun/orise-charge-cloud) | [管理后台](https://github.com/NaTieJun/orise-admin)  | [小程序](https://github.com/NaTieJun/orise-mp)  |
+| Gitee  | [微服务](https://gitee.com/orise001/orise-charge-cloud)   [微服务(备用)](https://gitee.com/orise001/orise-charge-cloud2)| [管理后台](https://gitee.com/orise001/orise-admin)  | [小程序](https://gitee.com/orise001/orise-mp)  |
+| GitCode  | [微服务](https://gitcode.com/orise/orise-charge-cloud) | [管理后台](https://gitcode.com/orise/orise-admin)  | [小程序](https://gitcode.com/orise/orise-mp/)  |
+
 ### ⭐ 系统亮点
 
 1. 支持云快充通信协议 ｜ 华为FusionCharge ｜ 支持分时电价 ｜ 支持停车系统
