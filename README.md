@@ -41,7 +41,7 @@
 
 ### 🧭 参考文档
    
-[👉 开始阅读](http://doc.trytowish.cn/)
+[👉 开始阅读](https://doc.trytowish.cn/)
    
 ### 💻 运行环境
 
@@ -83,7 +83,9 @@ omind-simplat：模拟充电桩模块
 [👉 进入商业标准版演示系统](https://charge.trytowish.com/)  
 用户名：``admin``  
 密码：``admin123``  
-  
+
+[👉 进入小程序/H5演示系统](https://h5.charge.trytowish.com/)
+
 演示系统基于阿里云抢占式服务器快速构建，每12小时会检测并自动部署系统环境  
 [👉 基于开源项目，快速构建最省钱的抢占式服务器](https://github.com/flainsky/alibaba-cloud-spot-server-easy-start)  
   
@@ -95,11 +97,11 @@ omind-simplat：模拟充电桩模块
 
 使用docker-compose快速构建模拟系统
 
-[👉 开始构建服务](http://doc.trytowish.cn/develop/cloud.html)
+[👉 开始构建服务](https://doc.trytowish.cn/develop/cloud.html)
 
-[👉 开始构建用户端](http://doc.trytowish.cn/develop/front-end.html)
+[👉 开始构建用户端](https://doc.trytowish.cn/develop/front-end.html)
 
-[👉 模拟桩使用教程](http://doc.trytowish.cn/guide/simtest.html)
+[👉 模拟桩使用教程](https://doc.trytowish.cn/guide/simtest.html)
 
 ### 🌈 核心功能
 
