@@ -116,12 +116,22 @@ omind-simplat：模拟充电桩模块
 ![extending-a-theme](/images/cloud/系统业务层级图.png)
 
 ### 🖥️ UI界面展示
-
-![login](/images/front-end/operating-system-login.jpg)
-
-![dashboard](/images/front-end/operating-system-dashboard.jpg)
-
-![monitor](/images/front-end/operating-system-monitor.jpg)
+- 登录页<br/>
+![login](/images/front-end/mgr_preview1.png)
+- 统计展示页<br/>
+![dashboard](/images/front-end/mgr_preview2.png)
+- 仿真桩分组集群<br/>
+![monitor](/images/front-end/mgr_preview3.pngg)
+- 桩监控<br/>
+![monitor2](/images/front-end/mgr_preview4.pngg)
+- 订单页<br/>
+![orderList](/images/front-end/mgr_preview5.pngg)
+- 企业客户<br/>
+![company](/images/front-end/mgr_preview6.pngg)
+- 活动页<br/>
+![activity](/images/front-end/mgr_preview7.pngg)
+- 优惠券<br/>
+![coupon](/images/front-end/mgr_preview8.pngg)
 
 <img src="/images/cloud/小程序-充电站列表.jpg" alt="小程序-充电站列表" height="300">
 <img src="/images/cloud/模拟充电-选择充电桩.jpg" alt="模拟充电-选择充电桩" height="300">
