@@ -6,12 +6,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.util.TextUtils;
+import org.dromara.common.core.constant.HttpStatus;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.exception.base.BaseException;
-import org.dromara.omind.mp.domain.request.MpInfoRequest;
-import org.dromara.omind.mp.domain.request.MpLoginRequest;
-import org.dromara.omind.mp.domain.request.MpPhoneRequest;
-import org.dromara.omind.mp.domain.request.SignRequest;
+import org.dromara.omind.mp.domain.request.*;
+import org.dromara.omind.mp.domain.vo.UserVo;
 import org.dromara.omind.mp.service.MpService;
 import org.dromara.omind.mp.utils.SignUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,6 +116,74 @@ public class AuthV1Controller {
         catch (Exception ex){
             log.error("根据token查询用户信息",ex);
             return R.fail("内部服务错误");
+        }
+    }
+
+    @Operation(summary = "支付宝小程序登录接口")
+    @PostMapping("ali/login")
+    public R<UserVo> aliLogin(@RequestBody AliLoginRequest request, SignRequest signRequest) {
+        try {
+            //签名验证
+            signUtil.checkTokenAndSign(null, signRequest);
+            //todo 完成阿里登录
+            //mpService.aliLogin(request);
+            return null;
+        } catch (BaseException ex) {
+            log.error(ex.toString(), ex);
+            return R.fail(HttpStatus.ERROR, ex.getMessage());
+        } catch (Exception ex) {
+            log.error("小程序登录接口授权失败", ex);
+            return R.fail(HttpStatus.ERROR, "内部服务错误");
+        }
+    }
+
+    @Operation(summary = "支付宝小程序手机号解析接口")
+    @PostMapping("ali/phone")
+    public R<UserVo> aliPhone(@RequestBody AliPhoneRequest aliPhoneRequest, SignRequest signRequest) {
+        try {
+            String token = request.getHeader("token");
+            if (TextUtils.isBlank(token)) {
+                return R.fail(HttpStatus.ERROR,"TOKEN无效");
+            }
+            signUtil.checkTokenAndSign(token, signRequest);
+
+            aliPhoneRequest.setToken(token);
+
+            //todo  完成阿里登录
+            //return mpService.aliPhoneInfo(aliPhoneRequest);
+            return null;
+        } catch (BaseException ex) {
+            log.error(ex.toString(), ex);
+            return R.fail(HttpStatus.ERROR, ex.getMessage());
+        } catch (Exception ex) {
+            log.error("小程序手机号解析接口失败", ex);
+            return R.fail(HttpStatus.ERROR, "内部服务错误");
+        }
+    }
+
+    @Operation(summary = "手机号直接登录（自动注册）")
+    @PostMapping("login/phone")
+    public R<UserVo> mobileLogin(@RequestBody MpMobileLoginRequest mpMobileLoginRequest, SignRequest signRequest){
+        try {
+            signUtil.checkTokenAndSign(null, signRequest);
+
+            if(TextUtils.isBlank(mpMobileLoginRequest.getMobile())){
+                return R.fail("无效的手机号");
+            }
+            else if(TextUtils.isBlank(mpMobileLoginRequest.getVerCode())){
+                return R.fail("无效的验证码");
+            }
+
+            //todo return mpService.mobileLogin(mpMobileLoginRequest);
+            return null;
+        }
+        catch (BaseException ex){
+            log.error(ex.toString(), ex);
+            return R.fail(HttpStatus.ERROR, ex.getMessage());
+        }
+        catch (Exception ex){
+            log.error("手机号直接登录",ex);
+            return R.fail(HttpStatus.ERROR, "内部服务错误");
         }
     }
 
