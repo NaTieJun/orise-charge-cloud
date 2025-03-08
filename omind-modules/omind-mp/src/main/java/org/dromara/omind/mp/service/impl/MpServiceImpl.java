@@ -8,15 +8,19 @@ import lombok.extern.log4j.Log4j2;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.http.util.TextUtils;
+import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.constant.HttpStatus;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.exception.base.BaseException;
 import org.dromara.common.core.utils.ServletUtils;
+import org.dromara.common.core.utils.TokenUtils;
+import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.omind.api.common.utils.ip.IpUtils;
 import org.dromara.omind.mp.constant.XcxRedisKey;
 import org.dromara.omind.mp.domain.request.MpInfoRequest;
 import org.dromara.omind.mp.domain.request.MpLoginRequest;
+import org.dromara.omind.mp.domain.request.MpMobileLoginRequest;
 import org.dromara.omind.mp.domain.request.MpPhoneRequest;
 import org.dromara.omind.mp.domain.vo.UserVo;
 import org.dromara.omind.mp.service.MpService;
@@ -182,6 +186,50 @@ public class MpServiceImpl implements MpService {
             //todo 头像
         }
         userVo.setUserInfo(userInfo);
+        return R.ok(userVo);
+    }
+
+    @Override
+    public R<UserVo> mobileLogin(MpMobileLoginRequest mpMobileLoginRequest) {
+        String key = GlobalConstants.CAPTCHA_CODE_KEY + mpMobileLoginRequest.getMobile();
+        if(!RedisUtils.hasKey(key)){
+            return R.fail("无效的验证码");
+        }
+        String verCode = RedisUtils.getCacheObject(key).toString();
+        if(TextUtils.isBlank(verCode)){
+            return R.fail("无效的验证码");
+        }
+        else if(!verCode.equals(mpMobileLoginRequest.getVerCode())){
+            return R.fail("无效的验证码");
+        }
+        final String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
+        //正确 开始登录/注册
+        OmindUserEntity omindUserEntity = userService.getUserByMobile(mpMobileLoginRequest.getMobile());
+        if(omindUserEntity == null){
+            //注册用户
+            omindUserEntity = new OmindUserEntity();
+            omindUserEntity.setMobile(mpMobileLoginRequest.getMobile());
+            omindUserEntity.setLastVisitIp(ip);
+            omindUserEntity.setLastVisitTime(new Date());
+            if(!userService.addUser(omindUserEntity)){
+                return R.fail("用户注册失败");
+            }
+            //补充默认值
+            omindUserEntity = userService.getUserByMobile(mpMobileLoginRequest.getMobile());
+        }
+        else{
+            omindUserEntity.setLastVisitIp(ip);
+            omindUserEntity.setLastVisitTime(new Date());
+            userService.updateById(omindUserEntity);
+        }
+        if(omindUserEntity.getDisableFlag() == 1){
+            throw new BaseException("账号被禁用，请联系管理员");
+        }
+        String token = TokenUtils.generateToken(JsonUtils.toJsonString(omindUserEntity));
+        RedisUtils.setCacheObject(XcxRedisKey.USER_TOKEN + token, omindUserEntity.getUid(), Duration.ofDays(1));
+        UserVo userVo = new UserVo();
+        userVo.setToken(token);
+        userVo.setUserInfo(omindUserEntity);
         return R.ok(userVo);
     }
 }

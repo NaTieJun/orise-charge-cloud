@@ -28,4 +28,6 @@ public interface OmindUserService {
     TableDataInfo<OmindUserEntity> selectUserList(OmindUserListDto omindUserListDto, PageQuery pageQuery);
 
     int disableUser(OmindUserOptDto omindUserOptDto) throws BaseException;
+
+    OmindUserEntity getUserByMobile(String mobile);
 }

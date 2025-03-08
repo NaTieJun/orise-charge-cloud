@@ -11,4 +11,6 @@ public interface RemoteOmindUserService {
     Boolean updateById(OmindUserEntity userEntity);
 
     OmindUserEntity getUserById(Long uid);
+
+    OmindUserEntity getUserByMobile(String mobile);
 }

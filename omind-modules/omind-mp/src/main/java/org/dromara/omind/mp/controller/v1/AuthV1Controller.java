@@ -174,8 +174,7 @@ public class AuthV1Controller {
                 return R.fail("无效的验证码");
             }
 
-            //todo return mpService.mobileLogin(mpMobileLoginRequest);
-            return null;
+            return mpService.mobileLogin(mpMobileLoginRequest);
         }
         catch (BaseException ex){
             log.error(ex.toString(), ex);

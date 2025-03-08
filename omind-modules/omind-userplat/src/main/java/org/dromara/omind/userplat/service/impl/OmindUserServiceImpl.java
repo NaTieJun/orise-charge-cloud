@@ -198,4 +198,33 @@ public class OmindUserServiceImpl implements OmindUserService {
 
         return 0;
     }
+
+    @Override
+    public OmindUserEntity getUserByMobile(String mobile) {
+        if(TextUtils.isBlank(mobile)){
+            return null;
+        }
+        String key = PlatRedisKey.USER_INFO_BY_MOBILE + mobile;
+        OmindUserEntity odUserEntity = null;
+        if (RedisUtils.hasKey(key)) {
+            odUserEntity = RedisUtils.getCacheObject(key);
+            if (odUserEntity != null) {
+                RedisUtils.expire(key, PlatRedisKey.TOKEN_VALID_DURANT);
+                RedisUtils.setCacheObject(key, odUserEntity);
+                return odUserEntity;
+            } else {
+                RedisUtils.deleteObject(key);
+            }
+        }
+        //还是通过查uid 再统一查询构建缓存比较合适，以免多次调用
+        LambdaQueryWrapper<OmindUserEntity> lambdaQuery = Wrappers.lambdaQuery();
+        lambdaQuery.eq(OmindUserEntity::getMobile, mobile);
+        List<OmindUserEntity> list = iService.list(lambdaQuery);
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+        odUserEntity = list.get(0);
+        RedisUtils.setCacheObject(key, list.get(0));
+        return odUserEntity;
+    }
 }

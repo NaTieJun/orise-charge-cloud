@@ -36,5 +36,10 @@ public class RemoteOmindUserServiceImpl implements RemoteOmindUserService {
         return omindUserService.getUserById(uid);
     }
 
+    @Override
+    public OmindUserEntity getUserByMobile(String mobile) {
+        return omindUserService.getUserByMobile(mobile);
+    }
+
 
 }

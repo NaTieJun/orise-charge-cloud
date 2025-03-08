@@ -115,4 +115,9 @@ public interface PlatRedisKey {
      */
     String USER_CAR_INFO = VER + "user:car:info:";
 
+    /**
+     * 根据手机号获取用户信息
+     */
+    String USER_INFO_BY_MOBILE = VER + "user:info4mobile";
+
 }
