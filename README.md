@@ -17,9 +17,13 @@
 | Gitee  | [充电平台微服务源码](https://gitee.com/orise001/orise-charge-cloud)<br>[充电平台微服务源码(备用)](https://gitee.com/orise001/omind-charge-cloud2)| [充电管理后台源码](https://gitee.com/orise001/orise-admin)  | [充电小程序源码](https://gitee.com/orise001/orise-mp)  |
 
 ### 🏆 荣誉与获奖
-1. 2024年度开源应用场景项目（中科协、中国计算机学会、中国通信协会、中科院软件所共同评定）
+1. 2024年度开源应用场景项目
 <img src="/images/awards/awards_01.jpg" alt="获奖01" height="300">   
+- 中科协、中国计算机学会、中国通信协会、中科院软件所共同评定
 <img src="/images/awards/awards_02.jpg" alt="获奖02" height="300">   
+- 2024年12月，国家科技传播中心
+<img src="/images/awards/awards_04.jpg" alt="获奖04" height="300">   
+- 开源应用场景NO.1
 <img src="/images/awards/awards_03.jpg" alt="获奖03" height="300">   
 
 ### ⭐ 系统亮点
