@@ -56,10 +56,10 @@ public class MpServiceImpl implements MpService {
             }
 
             WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(loginRequest.getCode());
-            String unionId = session.getUnionid();
+            String unionId = session.getOpenid();
             String openId = session.getOpenid();
             if(TextUtils.isBlank(unionId)){
-                return R.fail(HttpStatus.UNAUTHORIZED, "unionId获取失败");
+                unionId = openId + "";
             }
             OmindUserEntity userEntity = userService.getUserByUnionId(unionId);
             if(userEntity == null){
