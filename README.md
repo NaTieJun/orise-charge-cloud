@@ -163,6 +163,7 @@ omind-simplat：模拟充电桩模块
 [👉 奥升充电｜互联互通协议解析（2）——公共信息交换规范](https://zhuanlan.zhihu.com/p/713606086)   
 [👉 奥升充电｜互联互通协议解析（3）——业务信息交换规范](https://zhuanlan.zhihu.com/p/713610708)   
 [👉 奥升充电｜互联互通协议解析（4）——常见问题](https://zhuanlan.zhihu.com/p/713654570)   
+[👉 奥升充电｜OCPP协议解析](https://blog.csdn.net/flainsky/article/details/156346918)  
 
 ### 🙏 特别鸣谢
 
